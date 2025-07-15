@@ -1,0 +1,53 @@
+{
+  "ver": "0.0.1",
+  "authors": ["ac.shahnam"],
+  "contact": "",
+  "categories": ["active"],
+  "widgets": {
+    "input": null,
+    "output": "kbaseReportView"
+  },
+  "parameters": [
+    {
+      "id": "reads_input_ref",
+      "ui-name": "Nanopore Reads (FASTQ)",
+      "optional": false,
+      "advanced": false,
+      "allow_multiple": false,
+      "default_values": [""],
+      "field_type": "text",
+      "text_options": {
+        "valid_ws_types": ["KBaseFile.SingleEndLibrary"]
+      }
+    }
+  ],
+  "behavior": {
+    "service-mapping": {
+      "url": "",
+      "name": "acshahnam_nanoplot",
+      "method": "run_acshahnam_nanoplot",
+      "input_mapping": [
+        {
+          "narrative_system_variable": "workspace",
+          "target_property": "workspace_name"
+        },
+        {
+          "input_parameter": "reads_input_ref",
+          "target_property": "reads_input_ref"
+        }
+      ],
+      "output_mapping": [
+        {
+          "service_method_output_path": [0, "report_name"],
+          "target_property": "report_name"
+        },
+        {
+          "service_method_output_path": [0, "report_ref"],
+          "target_property": "report_ref"
+        }
+      ]
+    }
+  },
+  "job_id_output_field": "docker"
+}
+
