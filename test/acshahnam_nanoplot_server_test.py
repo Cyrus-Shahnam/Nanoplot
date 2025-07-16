@@ -43,7 +43,7 @@ class acshahnam_nanoplotTest(unittest.TestCase):
         cls.scratch = cls.cfg['scratch']
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
         suffix = int(time.time() * 1000)
-        cls.wsName = "test_ContigFilter_" + str(suffix)
+        cls.wsName = "TestNanoPlot_" + str(int(time.time() * 1000))
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
     @classmethod
@@ -63,5 +63,6 @@ class acshahnam_nanoplotTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.run_acshahnam_nanoplot(self.ctx, {'workspace_name': self.wsName,
-                                                             'parameter_1': 'Hello World!'})
+        ret = self.serviceImpl.run_acshahnam_nanoplot(self.ctx, {
+            'workspace_name': self.wsName,
+            'reads_input_ref': '221559/2/1'})

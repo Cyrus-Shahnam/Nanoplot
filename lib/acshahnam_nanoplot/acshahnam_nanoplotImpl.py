@@ -22,8 +22,8 @@ class acshahnam_nanoplot:
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
 
-    #BEGIN_CONSTRUCTOR
-    def __init__(self, config):
+        def __init__(self, config):
+        #BEGIN_CONSTRUCTOR
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.scratch = config['scratch']
         self.dfu = DataFileUtil(self.callback_url)
@@ -32,7 +32,7 @@ class acshahnam_nanoplot:
     #END_CONSTRUCTOR
 
     #BEGIN run_acshahnam_nanoplot
-    def run_acshahnam_nanoplot(self, params):
+    def run_acshahnam_nanoplot(self, ctx, params):
         logging.info("Starting NanoPlot run")
         
         # Download reads
@@ -93,8 +93,8 @@ class acshahnam_nanoplot:
         return output
     #END run_acshahnam_nanoplot
 
-    #BEGIN_STATUS
     def status(self):
+    #BEGIN_STATUS
         return {
             'state': "OK",
             'message': "",
