@@ -2,7 +2,7 @@
 import logging
 import os
 import subprocess
-from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.KBaseReportClient import KBaseReport
 #END_HEADER
 
@@ -26,7 +26,6 @@ class acshahnam_nanoplot:
         #BEGIN_CONSTRUCTOR
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.scratch = config['scratch']
-        self.dfu = DataFileUtil(self.callback_url)
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
     #END_CONSTRUCTOR
@@ -38,10 +37,11 @@ class acshahnam_nanoplot:
         # Download reads
         reads_ref = params['reads_input_ref']
         logging.info(f"Fetching reads: {reads_ref}")
-
-        reads_info = self.dfu.download_reads({
+        
+        self.ru = ReadsUtils(self.callback_url)
+        reads_info = self.ru.download_reads({
             'read_libraries': [reads_ref],
-            'interleaved': False,
+            'interleaved': "false",
             'gzipped': True
         })
 
@@ -57,7 +57,7 @@ class acshahnam_nanoplot:
             'NanoPlot',
             '--fastq', fastq_path,
             '--outdir', output_dir,
-            '--plots', 'kde',
+            "--loglength",
             '--N50'
         ]
 
