@@ -4,6 +4,9 @@ import os
 import subprocess
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.KBaseReportClient import KBaseReport
+from .Utils.createHtmlReport import HTMLReportCreator
+from .Utils.run_NanoplotUtils import run_Nanoplot, upload_reads
+
 #END_HEADER
 
 class acshahnam_nanoplot:
@@ -103,3 +106,21 @@ class acshahnam_nanoplot:
             'git_commit_hash': self.GIT_COMMIT_HASH
         }
     #END_STATUS
+   def run_userNameModulename(self, ctx, params):
+        # Create a report
+        report_creator = HTMLReportCreator(self.callback_url)
+        output = report_creator.create_html_report(reportDirectory, params['workspace_name'], objects_created)
+        logging.info ('HTML output report: ' + str(output))
+        corrected_file_name = returned_dict['corrected_file_name']
+        corrected_file_path = returned_dict['corrected_file_path']
+        logging.info('Corrected file path: ' + corrected_file_path)
+        logging.info('Corrected file name: ' + corrected_file_name)
+
+
+        new_reads_upa = upload_reads(self.callback_url, corrected_file_path, params['workspace_name'], corrected_file_name, params['input_reads_ref'])
+
+
+        objects_created = [{
+                'ref': new_reads_upa,
+                'description': 'Corrected reads library'
+            }]
