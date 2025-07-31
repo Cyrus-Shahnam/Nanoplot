@@ -1,5 +1,5 @@
 
-from installed_clients.readsutilsClient import ReadsUtils
+from installed_clients.ReadsutilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
 
 def upload_reads(callback_url, reads_file, ws_name, reads_obj_name, source_reads_upa):
