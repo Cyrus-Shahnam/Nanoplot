@@ -4,6 +4,16 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 
 
+def upload_reads(callback_url, read_path, workspace_name, obj_name):
+    ru = ReadsUtils(callback_url)
+    return ru.upload_reads({
+        'fwd_file': read_path,
+        'sequencing_tech': 'Nanopore',
+        'name': obj_name,
+        'workspace_name': workspace_name
+    })
+
+
 def run_Nanoplot(callback_url, input_reads_ref, output_workspace, output_name):
     """
     Run NanoPlot on the specified FASTQ reads.
