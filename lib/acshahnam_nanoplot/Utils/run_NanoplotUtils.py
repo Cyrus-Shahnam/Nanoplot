@@ -1,28 +1,70 @@
 
 from installed_clients.ReadsUtilsClient import ReadsUtils
+from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 
-def upload_reads(callback_url, reads_file, ws_name, reads_obj_name, source_reads_upa):
+
+def run_Nanoplot(callback_url, input_reads_ref, output_workspace, output_name):
     """
-    callback_url = as usual.
-    reads_file = full path to the reads file to upload
-    ws_name = the workspace to use for uploading the reads file
-    reads_obj_name = the name of the new reads object to save as
-    source_reads = if not None, the source UPA for the original reads file.
+    Run NanoPlot on the specified FASTQ reads.
+
+    Parameters
+    ----------
+    callback_url : str
+        The callback URL from the KBase environment.
+    input_reads_ref : str
+        KBase reference to the input reads object.
+    output_workspace : str
+        Name of the workspace where the output will be saved.
+    output_name : str
+        Base name for output files and report.
     """
-    # unfortunately, the ReadsUtils only accepts uncompressed fq files- this should
-    # be fixed on the KBase side
+
+    # Set up clients
     dfu = DataFileUtil(callback_url)
-    reads_unpacked = dfu.unpack_file({'file_path': reads_file})['file_path']
-
-
     ru = ReadsUtils(callback_url)
-    new_reads_upa = ru.upload_reads({
-        'fwd_file': reads_unpacked,
-        'interleaved': 1,
-        'wsname': ws_name,
-        'name': reads_obj_name,
-        'source_reads_ref': source_reads_upa
-    })['obj_ref']
-    print('saved ' + str(reads_unpacked) + ' to ' + str(new_reads_upa))
-    return new_reads_upa
+    report_client = KBaseReport(callback_url)
+
+    # Create working directory
+    work_dir = os.path.join('/kb/module/work/tmp', str(uuid.uuid4()))
+    os.makedirs(work_dir, exist_ok=True)
+
+    # Download reads
+    reads_info = ru.download_reads({
+        'read_libraries': [input_reads_ref],
+        'interleaved': False,
+        'deinterleaved': False
+    })
+    fastq_path = reads_info['files'][input_reads_ref]['files']['fwd']
+
+    # Run NanoPlot
+    output_dir = os.path.join(work_dir, 'nanoplot_output')
+    os.makedirs(output_dir, exist_ok=True)
+
+    nanoplot_cmd = [
+        'NanoPlot',
+        '--fastq', fastq_path,
+        '--outdir', output_dir,
+        '--plots', 'dot'
+    ]
+
+    subprocess.run(nanoplot_cmd, check=True)
+
+    # Compress NanoPlot output for report
+    output_zip = os.path.join(work_dir, f"{output_name}_NanoPlot.zip")
+    shutil.make_archive(output_zip.replace(".zip", ""), 'zip', output_dir)
+
+    shock_id = dfu.file_to_shock({'file_path': output_zip, 'make_handle': 0, 'pack': 'zip'})['shock_id']
+
+    report_output = report_client.create_extended_report({
+        'direct_html_link_index': 0,
+        'html_links': [{
+            'shock_id': shock_id,
+            'name': f"{output_name}_NanoPlot.zip",
+            'label': "NanoPlot output"
+        }],
+        'report_object_name': f"{output_name}_NanoPlot_report",
+        'workspace_name': output_workspace
+    })
+
+    return report_output
