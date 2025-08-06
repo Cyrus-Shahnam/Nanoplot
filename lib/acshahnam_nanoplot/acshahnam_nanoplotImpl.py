@@ -1,7 +1,10 @@
 #BEGIN_HEADER
-import logging
 import os
+import logging
+import sys
+import traceback
 import subprocess
+
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.KBaseReportClient import KBaseReport
 from .Utils.createHtmlReport import HTMLReportCreator
