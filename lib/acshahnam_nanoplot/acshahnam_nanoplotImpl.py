@@ -87,7 +87,7 @@ class acshahnam_nanoplot:
                 'name': 'NanoPlot-report.html',
                 'path': copied_html_path
             }],
-            'report_object_name': 'nanoplot_report',
+            'report_object_name': report_name
             'workspace_name': params['workspace_name']
         })
 
