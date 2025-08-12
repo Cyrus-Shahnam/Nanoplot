@@ -97,7 +97,7 @@ class acshahnam_nanoplot:
             'report_ref': report_info['ref']
         }
 
-        return output
+        return [output]
     #END run_acshahnam_nanoplot
 
     def status(self):
