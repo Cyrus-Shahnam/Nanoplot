@@ -21,7 +21,7 @@ class HTMLReportCreator:
         :param workspace_name: Name of the workspace where the report will be stored.
         :return: Dictionary with the report name and reference.
         """
-        report_name = 'kb_cdm_genome_match_report_' + str(uuid.uuid4())
+        report_name = 'nanoplots_fastq_output_' + str(uuid.uuid4())
 
 
         # Upload the directory to Shock
